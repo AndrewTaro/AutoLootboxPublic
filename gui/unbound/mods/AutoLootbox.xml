@@ -3,8 +3,9 @@
 		<bind name="collectionDH" value="CC.userPrefs; 'userPrefsCollection'"/>
 		<bind name="entityDH" value="'userPrefsEntity'; userPrefsCollection[0].id"/>
 		<bind name="watchDH" value="'userPrefs'; ['userPrefsEntity.userPrefs.evUserPrefsChanged']; userPrefsEntity.userPrefs.userPrefs"/>
-		<bind name="controller" value="'lesta.dialogs.controllers.EntitySingletonController'; 'optionData'"/>
-		<bind name="controller" value="'lesta.dialogs.controllers.EntitySingletonController'; 'realmConstants'"/>
+		<bind name="firstEntityDH" value="'optionDataEntity'; CC.optionData"/>
+		<bind name="watchDH" value="'isBlurEnabled'; ['optionDataEntity.optionData.evIsBlurEnabledChanged']; optionDataEntity.optionData.isBlurEnabled"/>
+		<bind name="watchDH" value="'contrast'; ['optionDataEntity.optionData.evContrastChanged']; optionDataEntity.optionData.contrast"/>
 		<bind name="firstEntityDH" value="'lootboxEntity'; CC.lootboxConfigComponent"/>
 		<bind name="watchDH" value="'maxBought';				['lootboxEntity.lootboxConfigComponent.evUpdate'];	lootboxEntity.lootboxConfigComponent.maxBought"/>
 		<bind name="watchDH" value="'lootboxExp';			['lootboxEntity.lootboxStorageComponent.evUpdate'];	lootboxEntity.lootboxStorageComponent.lootExp"/>
@@ -51,12 +52,13 @@
 					<marginTop value="-6px"/>
 				</style>
 				<block className="BlurMapCustom">
-					<bind name="controller" value="'lesta.dialogs.controllers.EntitySingletonController'; 'optionData'"/>
+					<bind name="firstEntityDH" value="'optionDataEntity'; CC.optionData"/>
+					<bind name="watchDH" value="'isBlurEnabled'; ['optionDataEntity.optionData.evIsBlurEnabledChanged']; optionDataEntity.optionData.isBlurEnabled"/>
 					<styleClass value="$FullsizeAbsolute"/>
 					<style>
 						<hitTest value="false"/>
 					</style>
-					<bind name="visible" value="optionData.blurEnabled"/>
+					<bind name="visible" value="isBlurEnabled"/>
 					<block className="mc_blurmap5_feather" type="native">
 						<bind name="appear" value="'startShow'; 0.3; 0; {alpha: 0}; {alpha: 1}"/>
 						<bind name="appear" value="'startHide'; 0.15; 0; {alpha: 1}; {alpha: 0}"/>
@@ -106,12 +108,13 @@
 						<marginTop value="-14px"/>
 					</style>
 					<block className="BlurMapCustom">
-						<bind name="controller" value="'lesta.dialogs.controllers.EntitySingletonController'; 'optionData'"/>
+						<bind name="firstEntityDH" value="'optionDataEntity'; CC.optionData"/>
+						<bind name="watchDH" value="'isBlurEnabled'; ['optionDataEntity.optionData.evIsBlurEnabledChanged']; optionDataEntity.optionData.isBlurEnabled"/>
 						<styleClass value="$FullsizeAbsolute"/>
 						<style>
 							<hitTest value="false"/>
 						</style>
-						<bind name="visible" value="optionData.blurEnabled"/>
+						<bind name="visible" value="isBlurEnabled"/>
 						<block className="mc_blurmap5_feather" type="native">
 							<bind name="appear" value="'startShow'; 0.3; 0; {alpha: 0}; {alpha: 1}"/>
 							<bind name="appear" value="'startHide'; 0.15; 0; {alpha: 1}; {alpha: 0}"/>
@@ -184,7 +187,7 @@
 						<marginBottom value="-33px"/>
 						<marginTop value="-33px"/>
 					</style>
-					<bind name="visible" value="optionData.blurEnabled"/>
+					<bind name="visible" value="isBlurEnabled"/>
 					<block className="mc_blurmap10_feather" type="native">
 						<bind name="appear" value="'startShow'; 0.3; 0; {alpha: 0}; {alpha: 0.55}"/>
 						<bind name="appear" value="'startHide'; 0.15; 0; {alpha: 0.55}; {alpha: 0}"/>
@@ -193,7 +196,7 @@
 					</block>
 				</block>
 				<block className="notification_panel" type="native">
-					<bind name="visible" value="optionData.contrast"/>
+					<bind name="visible" value="contrast"/>
 					<styleClass value="$FullsizeAbsolute"/>
 					<style>
 						<marginLeft value="-30px"/>
