@@ -163,7 +163,7 @@
 															_bannerText			: 'IDS_PURCHASE_LOOTBOX_EVENT',
 															_instructionText 	: 'IDS_LOOTBOXES_TOOLTIP_TEXT',
 															_request 			: 'openMetashop',
-															_requestParams 		: { url: URL.EVENT_LOOTBOX_INFO_IN_GAME }
+															_requestParams 		: { url: SC.Ui_windows.GUI_URL.EVENT_LOOTBOX_INFO_IN_GAME }
 														}"/>
 				</block>
 			</block>
@@ -367,7 +367,7 @@
 															_request:			'openPurchaseLootboxWindow',
 															_requesParams: 		{},
 															_focusIndex:		0,
-															_defaultFocused:	false,
+															_defaultFocused:	isGetBtnEnabled,
 															_label: 			'IDS_PURCHASE_LOOTBOX_C'}"/>
 						</block>
 						<block>
@@ -485,7 +485,7 @@
 														_focusIndex: 1,
 														_dispatch: 'openLootboxClicked',
 														_label: 'IDS_OPEN_LOOTBOX',
-														_defaultFocused: true}"/>
+														_defaultFocused: !isGetBtnEnabled}"/>
 						<bind name="dispatch" value="'openLootboxClicked'; lootboxOpened ? 'hideRewards' : null; {}; SC.Common.UBSCOPE_EVENT_DIRECTIONS.DOWN"/>
 					</block>
 					<block>
