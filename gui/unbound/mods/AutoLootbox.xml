@@ -18,6 +18,17 @@
 		<bind name="collectionDH" value="CC.lootboxTypeInfoComponent; 'lootboxTypesEntitiesList'"/>
 		<bind name="changeDispatch" value="lootboxTypesEntitiesList; 'evLootboxTypesListChanged'"/>
 		<bind name="action" value="'evLootboxTypesListChanged'; 'setUserPref'; {value: 0, name: 'selectedLootbox'}"/>
+		<bind name="primaryEntityDH" value="'webEventEntity'; CC.webEvent; 'WebEventLootboxesShop'"/>
+		<bind name="watchDH" value="'startTS'; ['webEventEntity.webEvent.evUpdate']; webEventEntity.webEvent.startTS"/>
+		<bind name="watchDH" value="'endTS'; ['webEventEntity.webEvent.evUpdate']; webEventEntity.webEvent.endTS"/>
+		<bind name="primaryEntityDH" value="'featureEntity_29'; CC.accountFeature; SC.Common.ACCOUNT_FEATURE.BIT_MASKS[29]"/>
+		<bind name="watchDH" value="'feature_29'; ['featureEntity_29.accountFeature.evStateChanged']; featureEntity_29.accountFeature.state"/>
+		<bind name="watch" value="'featureState'; feature_29"/>
+		<bind name="action" value="''; 'featureSeen'; {featureIndex: 29}"/>
+		<bind name="serverTime" value="'serverTime'"/>
+		<bind name="watch" value="'eventLootboxBannerTillStart'; (startTS - serverTime)"/>
+		<bind name="watch" value="'eventLootboxBannerTillEnd'; (endTS - serverTime)"/>
+		<bind name="watch" value="'eventBannerVisible'; eventLootboxBannerTillEnd &gt; 0 &amp;&amp; eventLootboxBannerTillStart &lt; 0 &amp;&amp; feature_29 != 'locked'"/>
 		<bind name="watch" value="'allBoxesBought'; maxBought == boughtToday"/>
 		<bind name="watch" value="'canBuyLootbox'; lootboxExp &gt;= lootboxEntity.lootboxConfigComponent.prices[boughtToday]"/>
 		<bind name="watch" value="'curLootboxPrice'; allBoxesBought	? -1
@@ -148,13 +159,7 @@
 					<bind name="instance" value="'ReferralSystemBanner'; hasRecruitsStatus == SC.Common.HAS_RECRUITS_STATUS.NO ? {} : null"/>
 				</block>
 				<block>
-					<bind name="visible" value="(eventLootboxBannerTillEnd &gt; 0) &amp;&amp; (eventLootboxBannerTillStart &lt; 0)"/>
-					<bind name="primaryEntityDH" value="'webEventEntity'; CC.webEvent; 'WebEventLootboxesShop'"/>
-					<bind name="watchDH" value="'startTS'; ['webEventEntity.webEvent.evUpdate']; webEventEntity.webEvent.startTS"/>
-					<bind name="watchDH" value="'endTS'; ['webEventEntity.webEvent.evUpdate']; webEventEntity.webEvent.endTS"/>
-					<bind name="serverTime" value="'serverTime'"/>
-					<bind name="watch" value="'eventLootboxBannerTillStart'; (startTS - serverTime)"/>
-					<bind name="watch" value="'eventLootboxBannerTillEnd'; (endTS - serverTime)"/>
+					<bind name="visible" value="eventBannerVisible"/>
 					<style>
 						<marginTop value="24px"/>
 					</style>
@@ -165,6 +170,20 @@
 															_request 			: 'openMetashop',
 															_requestParams 		: { url: SC.Ui_windows.GUI_URL.EVENT_LOOTBOX_INFO_IN_GAME }
 														}"/>
+					<bind name="primaryEntityDH" value="'lootboxArmoryNewTip';		CC.newGuidingTip; SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_ARMORY"/>
+					<bind name="primaryEntityDH" value="'lootboxArmoryRepeatNewTip';	CC.newGuidingTip; SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_ARMORY_REPEAT"/>
+					<bind name="watchDH" value="'isLootboxArmoryNewTipActive';		['lootboxArmoryNewTip.newGuidingTip.evChanged'];		lootboxArmoryNewTip.newGuidingTip.isActive"/>
+					<bind name="watchDH" value="'isLootboxArmoryRepeatNewTipActive';	['lootboxArmoryRepeatNewTip.newGuidingTip.evChanged'];	lootboxArmoryRepeatNewTip.newGuidingTip.isActive"/>
+					<bind name="watch" value="'armoryTipId'; 	isLootboxArmoryNewTipActive			? SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_ARMORY : 
+												isLootboxArmoryRepeatNewTipActive	? SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_ARMORY_REPEAT
+																					: SC.Context_guiding_tip.TIP_TYPE.NONE"/>
+					<bind name="watch" value="'armoryTipVisible'; eventBannerVisible &amp;&amp; armoryTipId != SC.Context_guiding_tip.TIP_TYPE.NONE"/>
+					<bind name="instance" value="'NewGuidingTipHub'; armoryTipVisible	? {	_newTipId: armoryTipId,
+																			_tipPositioning: 'right', 
+																			_offset: 5,
+																			_hasNextButton: lootboxesInStorage &gt;= 1,
+																			_hasFinishButton: lootboxesInStorage == 0}
+																		: null"/>
 				</block>
 			</block>
 			<!--mod-->
@@ -339,6 +358,20 @@
 						<width value="100%"/>
 					</style>
 					<bind name="transition" value="allBoxesBought; 0.15; {height: 146}; {height: 104}; {height: 144}; SC.Common.EASING_FUNCTIONS.OUT_QUAD; 0.17"/>
+					<bind name="primaryEntityDH" value="'lootboxDailyNewTip';		CC.newGuidingTip; SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_DAILY"/>
+					<bind name="primaryEntityDH" value="'lootboxDailyRepeatNewTip';	CC.newGuidingTip; SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_DAILY_REPEAT"/>
+					<bind name="watchDH" value="'isLootboxDailyNewTipActive';		['lootboxDailyNewTip.newGuidingTip.evChanged'];			lootboxDailyNewTip.newGuidingTip.isActive"/>
+					<bind name="watchDH" value="'isLootboxDailyRepeatNewTipActive';	['lootboxDailyRepeatNewTip.newGuidingTip.evChanged'];	lootboxDailyRepeatNewTip.newGuidingTip.isActive"/>
+					<bind name="watch" value="'dailyTipId'; 	isLootboxDailyNewTipActive			? SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_DAILY : 
+											isLootboxDailyRepeatNewTipActive	? SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_DAILY_REPEAT
+																				: SC.Context_guiding_tip.TIP_TYPE.NONE"/>
+					<bind name="watch" value="'dailyTipVisible'; dailyTipId != SC.Context_guiding_tip.TIP_TYPE.NONE"/>
+					<bind name="instance" value="'NewGuidingTipHub'; dailyTipVisible ? {	_newTipId: dailyTipId,
+																		_tipPositioning: 'left', 
+																		_offset: 5,
+																		_hasNextButton: lootboxesInStorage &gt;= 1 || eventBannerVisible,
+																		_hasFinishButton: lootboxesInStorage == 0 &amp;&amp; !eventBannerVisible}
+																	: null"/>
 					<block>
 						<styleClass value="$MiddleAligned"/>
 						<style>
@@ -354,7 +387,10 @@
 						<params>
 							<param name="name" value="getLootBox"/>
 						</params>
-						<bind name="feature" value="30; ''"/>
+						<bind name="primaryEntityDH" value="'featureEntity_30'; CC.accountFeature; SC.Common.ACCOUNT_FEATURE.BIT_MASKS[30]"/>
+						<bind name="watchDH" value="'feature_30'; ['featureEntity_30.accountFeature.evStateChanged']; featureEntity_30.accountFeature.state"/>
+						<bind name="watch" value="'featureState'; feature_30"/>
+						<bind name="action" value="''; 'featureSeen'; {featureIndex: 30}"/>
 						<bind name="fade" value="(canBuyLootbox &amp;&amp; !allBoxesBought); 0.15; {alpha: 0, top: 5}; {alpha: 1, top: 0}; {alpha: 0, top: -5}; 1; 0.15"/>
 						<styleClass value="$MiddleAligned"/>
 						<style>
@@ -437,6 +473,14 @@
 					</block>
 				</block>
 				<block>
+					<bind name="primaryEntityDH" value="'lootboxOpenNewTip';			CC.newGuidingTip; SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_OPEN"/>
+					<bind name="primaryEntityDH" value="'lootboxOpenRepeatNewTip';	CC.newGuidingTip; SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_OPEN_REPEAT"/>
+					<bind name="watchDH" value="'isLootboxOpenNewTipActive';			['lootboxOpenNewTip.newGuidingTip.evChanged'];			lootboxOpenNewTip.newGuidingTip.isActive"/>
+					<bind name="watchDH" value="'isLootboxOpenRepeatNewTipActive';	['lootboxOpenRepeatNewTip.newGuidingTip.evChanged'];	lootboxOpenRepeatNewTip.newGuidingTip.isActive"/>
+					<bind name="watch" value="'openTipId'; 	isLootboxOpenNewTipActive		? SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_OPEN : 
+											isLootboxOpenRepeatNewTipActive	? SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_OPEN_REPEAT
+																			: SC.Context_guiding_tip.TIP_TYPE.NONE"/>
+					<bind name="watch" value="'openTipVisible'; openTipId != SC.Context_guiding_tip.TIP_TYPE.NONE"/>
 					<style>
 						<marginTop value="21px"/>
 						<marginBottom value="40px"/>
@@ -486,6 +530,12 @@
 														_dispatch: 'openLootboxClicked',
 														_label: 'IDS_OPEN_LOOTBOX',
 														_defaultFocused: !isGetBtnEnabled}"/>
+						<bind name="instance" value="'NewGuidingTipHub'; openTipVisible 	? {	_newTipId: openTipId,
+																			_tipPositioning: 'left', 
+																			_offset: 5}
+																		: null"/>
+						<bind name="action" value="'click'; openTipId == SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_OPEN_REPEAT ? 'deactivateTipChain': ''; 
+										{tip_chain_id: SC.Context_guiding_tip.TIP_CHAIN_ID.LOOTBOXES_REPEAT}"/>
 						<bind name="dispatch" value="'openLootboxClicked'; lootboxOpened ? 'hideRewards' : null; {}; SC.Common.UBSCOPE_EVENT_DIRECTIONS.DOWN"/>
 					</block>
 					<block>
@@ -496,6 +546,8 @@
 						<bind name="handleEventDH" value="'lootboxStateEntity.lootboxOpeningState.evLootboxesOpenStarted'; 'startOpenLootboxes'"/>
 						<bind name="action" value="'startOpenLootboxes'; 'openLootboxes'; {}"/>
 						<bind name="action" value="'click'; 'setUserPref'; {value: 0, name: 'selectedLootbox'}"/>
+						<bind name="action" value="'click'; openTipId == SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_OPEN_REPEAT ? 'deactivateTipChain': ''; 
+										{tip_chain_id: SC.Context_guiding_tip.TIP_CHAIN_ID.LOOTBOXES_REPEAT}"/>
 						<bind name="fade" value="(lootboxesInStorage &gt; 2); 0.15; {alpha: 0, top: 5}; {alpha: 1, top: 0}; {alpha: 0, top: -5}"/>
 						<styleClass value="$MiddleAligned"/>
 						<style>
