@@ -18,16 +18,23 @@
 		<bind name="collectionDH" value="CC.lootboxTypeInfoComponent; 'lootboxTypesEntitiesList'"/>
 		<bind name="changeDispatch" value="lootboxTypesEntitiesList; 'evLootboxTypesListChanged'"/>
 		<bind name="action" value="'evLootboxTypesListChanged'; 'setUserPref'; {value: 0, name: 'selectedLootbox'}"/>
-		<bind name="primaryEntityDH" value="'webEventEntity'; CC.webEvent; 'WebEventLootboxesShop'"/>
-		<bind name="watchDH" value="'startTS'; ['webEventEntity.webEvent.evUpdate']; webEventEntity.webEvent.startTS"/>
-		<bind name="watchDH" value="'endTS'; ['webEventEntity.webEvent.evUpdate']; webEventEntity.webEvent.endTS"/>
+		<bind name="firstEntityDH" value="'currentBargeBannerEntity'; CC.currentBargeBanner"/>
+		<bind name="watchDH" value="'currentName'; ['currentBargeBannerEntity.currentBargeBanner.evChanged']; currentBargeBannerEntity.currentBargeBanner.name"/>
+		<bind name="primaryEntityDH" value="'bargeBannerEntity'; CC.bargeBanner; currentName"/>
+		<bind name="watchDH" value="'startTime';			[]; bargeBannerEntity.bargeBanner.startTime"/>
+		<bind name="watchDH" value="'finishTime';		[]; bargeBannerEntity.bargeBanner.finishTime"/>
+		<bind name="watchDH" value="'name';				[]; bargeBannerEntity.bargeBanner.name"/>
+		<bind name="watchDH" value="'backgroundImage';	[]; bargeBannerEntity.bargeBanner.backgroundImage"/>
+		<bind name="watchDH" value="'url';				[]; bargeBannerEntity.bargeBanner.url"/>
+		<bind name="watchDH" value="'mainText';			[]; bargeBannerEntity.bargeBanner.mainText"/>
+		<bind name="watchDH" value="'tooltipText';		[]; bargeBannerEntity.bargeBanner.tooltipText"/>
 		<bind name="primaryEntityDH" value="'featureEntity_29'; CC.accountFeature; SC.Common.ACCOUNT_FEATURE.BIT_MASKS[29]"/>
 		<bind name="watchDH" value="'feature_29'; ['featureEntity_29.accountFeature.evStateChanged']; featureEntity_29.accountFeature.state"/>
 		<bind name="watch" value="'featureState'; feature_29"/>
 		<bind name="action" value="''; 'featureSeen'; {featureIndex: 29}"/>
 		<bind name="serverTime" value="'serverTime'"/>
-		<bind name="watch" value="'eventLootboxBannerTillStart'; (startTS - serverTime)"/>
-		<bind name="watch" value="'eventLootboxBannerTillEnd'; (endTS - serverTime)"/>
+		<bind name="watch" value="'eventLootboxBannerTillStart'; (startTime - serverTime)"/>
+		<bind name="watch" value="'eventLootboxBannerTillEnd'; (finishTime - serverTime)"/>
 		<bind name="watch" value="'eventBannerVisible'; eventLootboxBannerTillEnd &gt; 0 &amp;&amp; eventLootboxBannerTillStart &lt; 0 &amp;&amp; feature_29 != 'locked'"/>
 		<bind name="watch" value="'allBoxesBought'; maxBought == boughtToday"/>
 		<bind name="watch" value="'canBuyLootbox'; lootboxExp &gt;= lootboxEntity.lootboxConfigComponent.prices[boughtToday]"/>
@@ -43,9 +50,7 @@
 																									SC.Common.LOOTBOX_CONSTANTS.MAX_MASS_LOOTBOX_OPEN_AMOUNT	)
 																						: 'IDS_OPEN_ALL_LOOTBOXES' "/>
 		<bind name="changeDispatch" value="activeAnimation; 'activeAnimationChangedEv'; {}; 2"/>
-		<!--mod
 		<bind name="action" value="'activeAnimationChangedEv'; activeAnimation ? 'lockBargeControls' : 'unlockBargeControls'; {}"/>
-		-->
 		<bind name="stageSize"/>
 		<bind name="watch" value="'leftOffset'; ((20 + (stageWidth - 1280)/14))"/>
 		<styleClass value="$FullsizeAbsolute"/>
@@ -79,11 +84,9 @@
 				</block>
 			</block>
 			<block>
-				<!--mod
 				<bind name="style" value="'hitTest'; activeAnimation ? false : true"/>
 				<bind name="style" value="'colorMatrixFilter'; activeAnimation ? '0 -80 0 -20' : ''"/>
-				-->
-				<bind name="instance" value="'BackButton'; {_text: 'IDS_RETURN_TO_DOCK', _action: 'navigateTo', _actionParams: {route: SC.Ui_windows.ROUTE.PORT}}"/>
+				<bind name="instance" value="'BackButton'; {_text: 'IDS_RETURN_FROM_MODAL_WINDOW_BUTTON', _action: 'navigateTo', _actionParams: {route: SC.Ui_windows.ROUTE.PORT}}"/>
 			</block>
 		</block>
 		<block>
@@ -92,10 +95,8 @@
 				<top value="720:24,1080:40ah"/>
 			</style>
 			<bind name="style" value="'right'; (leftOffset - 4) + 'px'"/>
-			<!--mod
 			<bind name="style" value="'hitTest'; activeAnimation ? false : true"/>
 			<bind name="style" value="'colorMatrixFilter'; activeAnimation ? '0 -80 0 -20' : ''"/>
-			-->
 			<bind name="instance" value="'ModalWindowCloseIcon'; {}"/>
 		</block>
 		<block>
@@ -161,14 +162,14 @@
 				<block>
 					<bind name="visible" value="eventBannerVisible"/>
 					<style>
-						<marginTop value="24px"/>
+						<marginTop value="96px"/>
 					</style>
-					<bind name="instance" value="'EventLootboxBanner';	{	_backgroundImage	: 'url:../service_kit/lootbox_banners/lootbox_banner.png',
+					<bind name="instance" value="'EventLootboxBanner';	{	_backgroundImage	: backgroundImage,
 															_showAnimation		: true,
-															_bannerText			: 'IDS_PURCHASE_LOOTBOX_EVENT',
-															_instructionText 	: 'IDS_LOOTBOXES_TOOLTIP_TEXT',
+															_bannerText			: mainText,
+															_instructionText 	: tooltipText,
 															_request 			: 'openMetashop',
-															_requestParams 		: { url: SC.Ui_windows.GUI_URL.EVENT_LOOTBOX_INFO_IN_GAME }
+															_requestParams 		: { url: url, params: {}, skipURLTranslation: true }
 														}"/>
 					<bind name="primaryEntityDH" value="'lootboxArmoryNewTip';		CC.newGuidingTip; SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_ARMORY"/>
 					<bind name="primaryEntityDH" value="'lootboxArmoryRepeatNewTip';	CC.newGuidingTip; SC.Context_guiding_tip.TIP_TYPE.LOOTBOXES_ARMORY_REPEAT"/>
@@ -182,7 +183,8 @@
 																			_tipPositioning: 'right', 
 																			_offset: 5,
 																			_hasNextButton: lootboxesInStorage &gt;= 1,
-																			_hasFinishButton: lootboxesInStorage == 0}
+																			_hasFinishButton: lootboxesInStorage == 0,
+																			_noArrow: true}
 																		: null"/>
 				</block>
 			</block>
@@ -368,9 +370,13 @@
 					<bind name="watch" value="'dailyTipVisible'; dailyTipId != SC.Context_guiding_tip.TIP_TYPE.NONE"/>
 					<bind name="instance" value="'NewGuidingTipHub'; dailyTipVisible ? {	_newTipId: dailyTipId,
 																		_tipPositioning: 'left', 
-																		_offset: 5,
+																		_offset: 16,
+																		_oppositeDirectionOffset: 24,
+																		_pointerOffset: allBoxesBought ? 46 : 44,
+																		_oppositePointerOffset: allBoxesBought ? -50 : -70,
 																		_hasNextButton: lootboxesInStorage &gt;= 1 || eventBannerVisible,
-																		_hasFinishButton: lootboxesInStorage == 0 &amp;&amp; !eventBannerVisible}
+																		_hasFinishButton: lootboxesInStorage == 0 &amp;&amp; !eventBannerVisible,
+																		_noArrow: true}
 																	: null"/>
 					<block>
 						<styleClass value="$MiddleAligned"/>
