@@ -40,10 +40,8 @@
 		<bind name="watch" value="'canBuyLootbox'; lootboxExp &gt;= lootboxEntity.lootboxConfigComponent.prices[boughtToday]"/>
 		<bind name="watch" value="'curLootboxPrice'; allBoxesBought	? -1
 													:  lootboxEntity.lootboxConfigComponent.prices[boughtToday]"/>
-		<!--mod-->
-		<bind name="watch" value="'isGetBtnEnabled'; canBuyLootbox &amp;&amp; !allBoxesBought"/>
-		<bind name="watch" value="'isOpenALLBtnEnabled'; lootboxesInStorage &gt;= 2"/>
-		<!--mod-->
+		<bind name="watch" value="'isGetBtnEnabled'; canBuyLootbox &amp;&amp; !allBoxesBought &amp;&amp; !activeAnimation"/>
+		<bind name="watch" value="'isOpenALLBtnEnabled'; !activeAnimation &amp;&amp; (lootboxesInStorage &gt;= 2)"/>
 		<bind name="watch" value="'openLootboxesBtnLabel';
 		lootboxesInStorage &gt;= SC.Common.LOOTBOX_CONSTANTS.MAX_MASS_LOOTBOX_OPEN_AMOUNT	? subst(	'IDS_SUBST_PL_OPEN_N_CONTAINERS', [],
 																									{ count: SC.Common.LOOTBOX_CONSTANTS.MAX_MASS_LOOTBOX_OPEN_AMOUNT },
@@ -189,7 +187,7 @@
 				</block>
 			</block>
 			<!--mod-->
-			<bind name="var" value="{selectedType: (userPrefs.selectedLootboxType == null) ? SC.Common.COMMON_LOOTBOX_TYPES.CREDITS : userPrefs.selectedLootboxType}"/>
+			<bind name="var" value="{selectedType: (userPrefs.selectedLootboxType == null) ? SC.Common.COMMON_LOOTBOX_TYPES.RESOURCES : userPrefs.selectedLootboxType}"/>
 			<bind name="watch" value="'_action';        autoCollectLootbox ? 'LootboxProxy.buyLootbox' : null"/>
 			<bind name="watch" value="'_actionParams';  autoCollectLootbox ? {userChoiceType: selectedType, forceStart: selectedType != SC.Common.COMMON_LOOTBOX_TYPES.LUCKY} : null"/>
 			<!--mod-->
@@ -315,7 +313,9 @@
 					<!--bind name="changeDispatch" value="boughtToday; canAutoCollectLootbox ? 'evAutoCollectLootbox' : 'evFake'; {}; 2"/-->
 					<!--^^in case player can collect more than 1 containers with single battle. Maybe unnecessary-->
 					<bind name="changeDispatch" value="canAutoCollectLootbox; 'evAutoCollectLootbox'; {}; 2; true"/>
+					<bind name="action" value="'evAutoCollectLootbox'; 'navigateTo'; {route: SC.Ui_windows.ROUTE.BARGE}"/>
 					<bind name="action" value="'evAutoCollectLootbox'; _action; _actionParams"/>
+					<bind name="action" value="'evAutoCollectLootbox'; 'navigateTo'; {route: SC.Ui_windows.ROUTE.PORT}"/>
 					<style>
 						<marginBottom value="10px"/>
 						<marginTop value="-10px"/>
@@ -519,9 +519,7 @@
 						<params>
 							<param name="name" value="openLootBox"/>
 						</params>
-						<!--mod-->
-						<bind name="watch" value="'_isOpenBtnEnabled'; lootboxesInStorage &gt; 0"/>
-						<!--mod-->
+						<bind name="watch" value="'_isOpenBtnEnabled'; !activeAnimation &amp;&amp; lootboxesInStorage &gt; 0"/>
 						<bind name="transition" value="(lootboxesInStorage &gt; 0); 0.15; {alpha: 0, top: 5}; {alpha: 1, top: 0}; {alpha: 0, top: -5}"/>
 						<styleClass value="$MiddleAligned"/>
 						<style>
@@ -560,9 +558,7 @@
 							<width value="210px"/>
 							<marginTop value="8px"/>
 						</style>
-						<!--mod-->
-						<bind name="style" value="'hitTest'; lootboxesInStorage &gt; 2"/>
-						<!--mod-->
+						<bind name="style" value="'hitTest'; !activeAnimation &amp;&amp; (lootboxesInStorage &gt; 2)"/>
 						<bind name="instance" value="'DefaultButton'; {	_width: '210px',
 														_enabled: isOpenALLBtnEnabled,
 														_isTransactionBtn: true,
