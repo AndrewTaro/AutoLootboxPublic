@@ -192,11 +192,6 @@
 																		: null"/>
 				</block>
 			</block>
-			<!--mod-->
-			<bind name="var" value="{selectedType: (userPrefs.selectedLootboxType == null) ? SC.Common.COMMON_LOOTBOX_TYPES.CREDITS : userPrefs.selectedLootboxType}"/>
-			<bind name="watch" value="'_action';        autoCollectLootbox ? 'LootboxProxy.buyLootbox' : null"/>
-			<bind name="watch" value="'_actionParams';  autoCollectLootbox ? {userChoiceType: selectedType, forceStart: selectedType != SC.Common.COMMON_LOOTBOX_TYPES.LUCKY} : null"/>
-			<!--mod-->
 			<block>
 				<style>
 					<position value="absolute"/>
@@ -309,17 +304,19 @@
 				</block>
 				<!--mod-->
 				<block>
+					<bind name="var" value="{selectedType: (userPrefs.selectedLootboxType == null) ? SC.Common.COMMON_LOOTBOX_TYPES.CREDITS : userPrefs.selectedLootboxType}"/>
 					<bind name="watch" value=" 'autoCollectLootbox'; (userPrefs.elementsGroupExpand.autoCollectLootbox == null) ? false : userPrefs.elementsGroupExpand.autoCollectLootbox"/>
 					<bind name="catch" value="'switchAutoCollectLootbox'; { autoCollectLootbox: !autoCollectLootbox }; 'saveAutoCollectLootbox'"/>
 					<bind name="action" value="'saveAutoCollectLootbox' ; 'setUserPref' ; {value: autoCollectLootbox, name: 'elementsGroupExpand', subName: 'autoCollectLootbox'}"/>
 					<bind name="dispatch" value="'click'; 'switchAutoCollectLootbox'"/>
 					<bind name="instance" value="'CheckBox'; { _isChecked: autoCollectLootbox, _label: 'IDS_AUTOPURCHASE'}"/>
 					<bind name="watch" value=" 'canAutoCollectLootbox'; autoCollectLootbox &amp;&amp; canBuyLootbox &amp;&amp; !allBoxesBought"/>
-					<bind name="dispatch" value="'lootboxBoughtEv'; canAutoCollectLootbox ? 'evAutoCollectLootbox' : 'evFake'; {}; 2"/>
-					<!--bind name="changeDispatch" value="boughtToday; canAutoCollectLootbox ? 'evAutoCollectLootbox' : 'evFake'; {}; 2"/-->
+					<!--bind name="dispatch" value="'lootboxBoughtEv'; canAutoCollectLootbox ? 'evAutoCollectLootbox' : 'evFake'; {}; 2"/-->
 					<!--^^in case player can collect more than 1 containers with single battle. Maybe unnecessary-->
+					<!--bind name="watch" value="'__action';        autoCollectLootbox ? 'LootboxProxy.buyLootbox' : null"/>
+					<bind name="watch" value="'__actionParams';  autoCollectLootbox ? {userChoiceType: selectedType, forceStart: selectedType != SC.Common.COMMON_LOOTBOX_TYPES.LUCKY} : null"/-->
 					<bind name="changeDispatch" value="canAutoCollectLootbox; 'evAutoCollectLootbox'; {}; 2; true"/>
-					<bind name="action" value="'evAutoCollectLootbox'; _action; _actionParams"/>
+					<bind name="action" value="'evAutoCollectLootbox'; 'LootboxProxy.buyLootbox'; {userChoiceType: selectedType, forceStart: selectedType != SC.Common.COMMON_LOOTBOX_TYPES.LUCKY}"/>
 					<style>
 						<marginBottom value="10px"/>
 						<marginTop value="-10px"/>
