@@ -52,6 +52,14 @@
 																						: 'IDS_OPEN_ALL_LOOTBOXES' "/>
 		<!--bind name="changeDispatch" value="activeAnimation; 'activeAnimationChangedEv'; {}; 2"/-->
 		<!--bind name="action" value="'activeAnimationChangedEv'; activeAnimation ? 'lockBargeControls' : 'unlockBargeControls'; {}"/-->
+		<bind name="primaryEntityDH" value="'routeEntityisOnBarge'; CC.route; SC.Ui_windows.ROUTE.BARGE"/>
+		<bind name="watchDH" value="'isOnBarge'; ['routeEntityisOnBarge.route.evIsActiveChanged']; routeEntityisOnBarge.route.isActive"/>
+		<bind name="dispatch" value="'isOnBarge' + varChanged; 'dockStateChanged'; {}; SC.Common.UBSCOPE_EVENT_DIRECTIONS.NONE; 0"/>
+		<bind name="dispatch" value="'dockStateChanged'; 'evDeactivateBanners'; {enableBannersValue: false}; SC.Common.UBSCOPE_EVENT_DIRECTIONS.NONE; 0"/>
+		<bind name="dispatch" value="'dockStateChanged'; 'evActivateBanners'; {enableBannersValue: true}; SC.Common.UBSCOPE_EVENT_DIRECTIONS.NONE; 1"/>
+		<bind name="catch" value="'evActivateBanners';	{enableBanners: true}"/>
+		<bind name="catch" value="'evDeactivateBanners';	{enableBanners: false}"/>
+		<bind name="style" value="'hitTest'; enableBanners"/>
 		<bind name="stageSize"/>
 		<bind name="watch" value="'leftOffset'; ((20 + (stageWidth - 1280)/14))"/>
 		<styleClass value="$FullsizeAbsolute"/>
@@ -116,30 +124,6 @@
 					<width value="300px"/>
 				</style>
 				<bind name="style" value="'marginLeft'; (leftOffset) + 'px'"/>
-				<block>
-					<styleClass value="$FullsizeAbsolute"/>
-					<style>
-						<marginLeft value="-28px"/>
-						<marginRight value="-28px"/>
-						<marginBottom value="-14px"/>
-						<marginTop value="-14px"/>
-					</style>
-					<block className="BlurMapCustom">
-						<bind name="primaryEntityDH" value="'isBlurEnabledEntity'; CC.preference; 'graphics.GUI.blur'"/>
-						<bind name="watchDH" value="'isBlurEnabled'; ['isBlurEnabledEntity.preference.evValueChanged']; isBlurEnabledEntity.preference.value"/>
-						<styleClass value="$FullsizeAbsolute"/>
-						<style>
-							<hitTest value="false"/>
-						</style>
-						<bind name="visible" value="isBlurEnabled"/>
-						<block className="mc_blurmap5_feather" type="native">
-							<bind name="appear" value="'startShow'; 0.3; 0; {alpha: 0}; {alpha: 1}"/>
-							<bind name="appear" value="'startHide'; 0.15; 0; {alpha: 1}; {alpha: 0}"/>
-							<styleClass value="$Fullsize"/>
-							<bind name="blurMap" value="0"/>
-						</block>
-					</block>
-				</block>
 				<block type="text">
 					<styleClass value="$TextDefaultBold17NM"/>
 					<style>
@@ -158,6 +142,21 @@
 								{_paragraphText: 'IDS_LOOTBOX_HINT_1'}]; 'RepeatParagraphItem'; {	_maxWidth: 300, _marginBottom: '18px',
 																									_middleAligned: false, _class: '$TextDefault17NM',
 																									_textAlign: 'left', _leading: -2}"/>
+					<block className="BlurMapCustom">
+						<bind name="primaryEntityDH" value="'isBlurEnabledEntity'; CC.preference; 'graphics.GUI.blur'"/>
+						<bind name="watchDH" value="'isBlurEnabled'; ['isBlurEnabledEntity.preference.evValueChanged']; isBlurEnabledEntity.preference.value"/>
+						<styleClass value="$FullsizeAbsolute"/>
+						<style>
+							<hitTest value="false"/>
+						</style>
+						<bind name="visible" value="isBlurEnabled"/>
+						<block className="mc_blurmap5_feather" type="native">
+							<bind name="appear" value="'startShow'; 0.3; 0; {alpha: 0}; {alpha: 1}"/>
+							<bind name="appear" value="'startHide'; 0.15; 0; {alpha: 1}; {alpha: 0}"/>
+							<styleClass value="$Fullsize"/>
+							<bind name="blurMap" value="0"/>
+						</block>
+					</block>
 				</block>
 				<block>
 					<bind name="firstEntityDH" value="'selfPlayerEntity'; CC.accountSelf"/>
@@ -167,7 +166,7 @@
 				<block>
 					<bind name="visible" value="eventBannerVisible"/>
 					<style>
-						<marginTop value="96px"/>
+						<marginTop value="24px"/>
 					</style>
 					<bind name="instance" value="'EventLootboxBanner';	{	_backgroundImage	: backgroundImage,
 															_showAnimation		: true,
