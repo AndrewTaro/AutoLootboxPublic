@@ -3,6 +3,19 @@
 		<bind name="collectionDH" value="CC.userPrefs; 'userPrefsCollection'"/>
 		<bind name="entityDH" value="'userPrefsEntity'; userPrefsCollection[0].id"/>
 		<bind name="watchDH" value="'userPrefs'; ['userPrefsEntity.userPrefs.evUserPrefsChanged']; userPrefsEntity.userPrefs.userPrefs"/>
+		<bind name="collectionDH" value="CC.battleType; 'selectedBattleTypes'; 'selected'"/>
+		<bind name="watch" value="'selectedBattleTypeGPID'; selectedBattleTypes[0].battleType.battleTypeGameParamId"/>
+		<bind name="collectionDH" value="CC.eventHubPhase; 'eventHubPhaseCollection'"/>
+		<bind name="watch" value="'currentPhaseEventID'; eventHubPhaseCollection[0].eventHubPhase.battleTypeGameParamId"/>
+		<bind name="watch" value="'isInEventHub'; isIn(selectedBattleTypes[0].eventBattleState.name, SC.Ui_common.EVENTS.EVENT_HUB_OPERATIONS)"/>
+		<bind name="primaryEntityDH" value="'eventHubFeatureEntity'; CC.accountFeature; SC.Common.ACCOUNT_FEATURE.BIT_MASKS[31]"/>
+		<bind name="watchDH" value="'eventHubFeatureState'; ['eventHubFeatureEntity.accountFeature.evStateChanged']; eventHubFeatureEntity.accountFeature.state"/>
+		<bind name="watch" value="'isEventHubUnlocked'; eventHubFeatureState != 'locked'"/>
+		<bind name="watch" value="'isEventModeEnabled'; selectedBattleTypeGPID == currentPhaseEventID || (isInEventHub &amp;&amp; !isEventHubUnlocked)"/>
+		<bind name="firstEntityDH" value="'dockDataEntity'; CC.dockData"/>
+		<bind name="watchDH" value="'isDockInputLocked';  ['dockDataEntity.dockData.evIsDockInputLockedChanged']; dockDataEntity.dockData.isDockInputLocked"/>
+		<bind name="transition" value="isDockInputLocked; 0.15; {alpha: 1}; {alpha: 0}; {alpha: 1}; SC.Common.EASING_FUNCTIONS.IN_QUAD; 0.15"/>
+		<bind name="style" value="'hitTest'; !isDockInputLocked"/>
 		<bind name="primaryEntityDH" value="'isBlurEnabledEntity'; CC.preference; 'graphics.GUI.blur'"/>
 		<bind name="watchDH" value="'isBlurEnabled'; ['isBlurEnabledEntity.preference.evValueChanged']; isBlurEnabledEntity.preference.value"/>
 		<bind name="primaryEntityDH" value="'contrastEntity'; CC.preference; 'graphics.GUI.contrast'"/>
@@ -22,10 +35,9 @@
 		<bind name="firstEntityDH" value="'currentBargeBannerEntity'; CC.currentBargeBanner"/>
 		<bind name="watchDH" value="'currentName'; ['currentBargeBannerEntity.currentBargeBanner.evChanged']; currentBargeBannerEntity.currentBargeBanner.name"/>
 		<bind name="primaryEntityDH" value="'bargeBannerEntity'; CC.bargeBanner; currentName"/>
+		<bind name="watchDH" value="'data';				['bargeBannerEntity.byteArrayData.evUpdate']; bargeBannerEntity.byteArrayData ? bargeBannerEntity.byteArrayData.data : null"/>
 		<bind name="watchDH" value="'startTime';			[]; bargeBannerEntity.bargeBanner.startTime"/>
 		<bind name="watchDH" value="'finishTime';		[]; bargeBannerEntity.bargeBanner.finishTime"/>
-		<bind name="watchDH" value="'name';				[]; bargeBannerEntity.bargeBanner.name"/>
-		<bind name="watchDH" value="'backgroundImage';	[]; bargeBannerEntity.bargeBanner.backgroundImage"/>
 		<bind name="watchDH" value="'url';				[]; bargeBannerEntity.bargeBanner.url"/>
 		<bind name="watchDH" value="'mainText';			[]; bargeBannerEntity.bargeBanner.mainText"/>
 		<bind name="watchDH" value="'tooltipText';		[]; bargeBannerEntity.bargeBanner.tooltipText"/>
@@ -168,7 +180,7 @@
 					<style>
 						<marginTop value="24px"/>
 					</style>
-					<bind name="instance" value="'EventLootboxBanner';	{	_backgroundImage	: backgroundImage,
+					<bind name="instance" value="'EventLootboxBanner';	{	_backgroundImage	: data,
 															_showAnimation		: true,
 															_bannerText			: mainText,
 															_instructionText 	: tooltipText,
@@ -595,7 +607,7 @@
 				<styleClass value="$MiddleAlignedAbsolutely"/>
 				<styleClass value="$MiddleVAligned"/>
 				<block>
-					<bind name="repeat" value="(lootboxOpened ? openedLootboxRewards : 0); 'LootboxRewardItemAdapter'; {_openedLootboxRewards: openedLootboxRewards}"/>
+					<bind name="repeat" value="(lootboxOpened ? openedLootboxRewards : 0); 'LootboxRewardItemAdapter'; {_isEventModeEnabled: isEventModeEnabled}"/>
 					<style>
 						<flow value="horizontal"/>
 					</style>
@@ -617,5 +629,4 @@
 			<bind name="instance" value="'LuckyLootboxAnimation'; isEpicLootboxGotNotFromLuckyType ? {} : null"/>
 		</block>
 	</block>
-
 </ui>
